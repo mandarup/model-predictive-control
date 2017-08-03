@@ -92,12 +92,7 @@ int main() {
           double psi = j[1]["psi"];
           double v = j[1]["speed"];
 
-          /*
-          * TODO: Calculate steering angle and throttle using MPC.
-          *
-          * Both are in between [-1, 1].
-          *
-          */
+
           for (int i = 0; i < ptsx.size(); i++){
               //shift car reference angle to 90 degrees
               double shift_x = ptsx[i] - px;
@@ -143,7 +138,7 @@ int main() {
           vector<double> mpc_x_vals;
           vector<double> mpc_y_vals;
 
-          for (int i = 1; i < num_points; i++){
+          for (unsigned int i = 1; i < num_points; i++){
               if(i % 2 == 0){
                   mpc_x_vals.push_back(vars[i]);
               }else{
