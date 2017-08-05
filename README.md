@@ -3,8 +3,7 @@
 
 ## Simulation Results
 
-The car is able to complete lap around the track given a reference trajectory
-by estimating waypoints (by fitting a polynomial to the trajectory) and
+The car is able to drive around the simulator track without leaving road, given a reference trajectory by estimating waypoints (by fitting a polynomial to the trajectory) and
 finding optimal sequence of actuations (using Ipopt solver) to achieve a smooth ride.
 
 ![Result](images/mpc_30mph_buggy.gif)
