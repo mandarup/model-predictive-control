@@ -44,6 +44,13 @@ states of trajectory and velocity by:
 - Minimizing total changes in state
 
 
+### Choice Of Parameters
+
+- N = 20, dt = .05 : these are chosen by trial and error from simulation tests, following guideline that smaller dt is better, and ```T = N x dt```
+
+- The multipliers in objective function are chosen by trial and error 
+
+
 ## Latency
 
 Latency is handled by applying update equations (see above) to the  current state to estimate car state 100ms in future.
