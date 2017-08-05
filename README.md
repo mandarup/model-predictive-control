@@ -6,7 +6,7 @@
 The car is able to drive around the simulator track without leaving road, given a reference trajectory by estimating waypoints (by fitting a polynomial to the trajectory) and
 finding optimal sequence of actuations (using Ipopt solver) to achieve a smooth ride.
 
-![Result](images/mpc_30mph_buggy.gif)
+![Result](images/mpc_30mph.gif)
 
 
 
@@ -44,6 +44,14 @@ states of trajectory and velocity by:
 - Minimizing total changes in state
 
 
-### Latency
+## Latency
 
 Latency is handled by applying update equations (see above) to the  current state to estimate car state 100ms in future.
+
+
+## Parameters
+
+- The reference velocity is read from `velocity.txt`, and this can be updated while the simulation is running, which allows online testing.
+
+- The weights/penalties in optimization objective are read from `penalties.txt`.
+  These are space delimited, specified in the same order in which they appear in the objective function. These are also updated online (read at every update) and can be changed while the simulation is running.
