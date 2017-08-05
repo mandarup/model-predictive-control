@@ -2,12 +2,13 @@
 #include <cppad/cppad.hpp>
 #include <cppad/ipopt/solve.hpp>
 #include "Eigen-3.3/Eigen/Core"
+#include <fstream>
 
 using CppAD::AD;
 
 // TODO: Set the timestep length and duration
-size_t N = 10;
-double dt = 0.1;
+size_t N = 20;
+double dt = 0.05;
 
 // This value assumes the model presented in the classroom is used.
 //
@@ -21,9 +22,23 @@ double dt = 0.1;
 // This is the length from front to CoG that has a similar radius.
 const double Lf = 2.67;
 
-double ref_v = 30;
+// double ref_v = 50;
 double ref_cte = 0;
 double ref_epsi = 0;
+
+double get_velocity(){
+    double ref_v;
+    std::ifstream infile;
+    infile.open("../velocity.txt");
+    // if (infile.good()){
+        infile >> ref_v;
+        std::cout << "input velocity" << endl;
+        std::cout << ref_v  << endl;
+    // }
+    infile.close();
+    return ref_v;
+}
+
 
 // The solver takes all the state variables and actuator
 // variables in a singular vector. Thus, we should to establish
@@ -53,27 +68,56 @@ class FG_eval {
     // NOTE: You'll probably go back and forth between this function and
     // the Solver function below.
 
+    // ifstream infile("../penalties.txt");
+
+    // if (infile.good()){
+    //     string sline;
+    //     getline(infile, sline);
+    //     // istringstream ss(line);
+    //     float C1,C2, C3, C4, C5, C6, C7;
+    //     sline >> C1 >> C2;
+    //     cout << "input args";
+    //     cout << C1 << C2;
+    // }
+
+    std::ifstream infile;
+    infile.open("../penalties.txt");
+    // if (infile.good()){
+        // string sline;
+        // getline(infile, sline);
+        // istringstream ss(line);
+        double C1,C2, C3, C4, C5, C6, C7;
+        infile >> C1 >> C2 >>  C3 >>  C4 >>  C5 >>  C6 >>  C7;
+        std::cout << "input args" << endl;
+        std::cout << C1 << " " << C2 << " " << C3 << " " << C4 << " " <<C5 << " " << C6 << " " << C7 << endl;
+    // }
+    infile.close();
+
+    double ref_v = get_velocity();
+
+
+
     // The cost is stored is the first element of `fg`.
     // Any additions to the cost should be added to `fg[0]`.
     fg[0] = 0;
 
     // The part of the cost based on the reference state.
     for (int t = 0; t < N; t++) {
-      fg[0] += CppAD::pow(vars[cte_start + t], 2);
-      fg[0] += 5* CppAD::pow(vars[epsi_start + t], 2);
-      fg[0] += CppAD::pow(vars[v_start + t] - ref_v, 2);
+      fg[0] += C1 * CppAD::pow(vars[cte_start + t], 2);
+      fg[0] += C2 * CppAD::pow(vars[epsi_start + t], 2);
+      fg[0] += C3 * CppAD::pow(vars[v_start + t] - ref_v, 2);
     }
 
     // Minimize the use of actuators.
     for (int t = 0; t < N - 1; t++) {
-      fg[0] += 5* CppAD::pow(vars[delta_start + t], 2);
-      fg[0] += 5*  CppAD::pow(vars[a_start + t], 2);
+      fg[0] += C4 * CppAD::pow(vars[delta_start + t], 2);
+      fg[0] += C5*  CppAD::pow(vars[a_start + t], 2);
     }
 
     // Minimize the value gap between sequential actuations.
     for (int t = 0; t < N - 2; t++) {
-      fg[0] += 1000 * CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);
-      fg[0] += 5 * CppAD::pow(vars[a_start + t + 1] - vars[a_start + t], 2);
+      fg[0] += C6 * CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);
+      fg[0] += C7 * CppAD::pow(vars[a_start + t + 1] - vars[a_start + t], 2);
     }
 
     //

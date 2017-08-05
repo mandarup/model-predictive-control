@@ -92,8 +92,7 @@ int main() {
           double psi = j[1]["psi"];
           double v = j[1]["speed"];
 
-          //convert v to m/s
-          //v *= 0.44704;
+
 
 
           for (int i = 0; i < ptsx.size(); i++){
@@ -129,9 +128,11 @@ int main() {
           /******************************************
           * latency
           *******************************************/
-          double dt = 0.1;
-           const double Lf = 2.67;
-           double new_x = v*dt;
+          //convert v to m/s
+          //   v *= 0.44704;
+          double dt = 0.05;
+          const double Lf = 2.67;
+          double new_x = v*dt;
           double new_y = 0;
           double new_psi = v*steer_value / Lf * dt;
           double new_v = v + throttle_value*dt;
@@ -151,7 +152,7 @@ int main() {
           std::vector<double> next_y_vals;
 
           double poly_inc = 2.5;
-          int num_points = 25;
+          int num_points = 15;
           for (int i = 1; i < num_points; i++){
               next_x_vals.push_back(poly_inc*i);
               next_y_vals.push_back(polyeval(coeffs,poly_inc*i));
